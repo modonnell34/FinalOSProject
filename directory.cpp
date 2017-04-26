@@ -24,6 +24,184 @@ int Directory::getSize() const {
 	return dsize;
 }
 
+#include <vector>
+#include <iostream>
+#include <assert.h>
+#include "directory.h"
+using namespace std;
+
+// Constructors
+Directory::Directory() {
+	int size = 0;
+}
+
+Directory::Directory(string name){
+	this->dname = name;
+	this->dsize = 0;
+}
+
+
+string Directory::getName() const {
+	return dname;
+}
+
+
+int Directory::getSize() const {
+	return dsize;
+}
+
+
+int Directory::getnumBlocks(){
+	return numBlocks;
+}
+
+
+void Directory::setnumBlocks(int n){
+	this->numBlocks = n;
+}
+
+
+void Directory::setName(string name) {
+	this->dname = name; 
+}
+
+int Directory::increaseSize(int num){
+       return dsize+= num; 
+}     
+
+int Directory::decreaseSize(int num){
+        return dsize-=num;
+}
+
+
+// File and directory Management Methods
+vector<string>Directory::getFiles(File * head) const { 
+
+	vector<string> f;
+
+    File * p;
+
+    p = head;
+	while (p!=NULL)
+    {
+	f.push_back(p->name);
+        p = p->next;  //update p to point to next node in the linked list ...
+    }
+
+	return f; 
+}
+
+File *Directory::createFile(int s, string n){
+    struct File *temp;
+    temp = new(struct File); 
+    if (temp == NULL)
+    {
+        cout<<"Memory not allocated "<<endl;
+        return 0;
+    }
+    else
+    {
+        temp->size = s;
+	temp->name = n;
+        temp->next = NULL;     
+        return temp;
+    }
+
+}
+
+
+
+void Directory::AddFile(File * & head, string num, int size)
+{
+        File * tail=NULL;
+
+        File * newNode = new File;
+
+        newNode->mode = "closed";
+        newNode->size = size;
+	newNode->name = num;
+
+        if (head==NULL){
+                head = newNode;
+        }
+        else {
+                tail = head;
+                while (tail->next!=NULL)
+                        tail = tail->next;
+
+                tail->next = newNode;
+        }
+}
+
+
+
+
+
+bool Directory::DeleteFile (File * & firstPtr, string name)
+{
+    File * prev, * cur;
+
+    cur = Search (firstPtr, name, prev);
+    if (cur==NULL)
+        return false;
+    else {
+       
+        if (prev!=NULL)
+        {       
+                prev->next = cur->next; 
+        }
+        else 
+                firstPtr = cur->next; 
+
+        delete cur;
+             return true;
+    }
+}
+
+
+File *Directory:: Search (File * firstNodePtr, string name)
+{
+        File * p;
+
+        p = firstNodePtr;
+        while (p!=NULL)
+        {
+                if (p->name==name)
+                        return p;
+                p = p->next;
+        }
+        return p;
+}
+
+
+File *Directory:: Search (File * firstNodePtr, string name,
+                File * & prevNode)
+{
+
+        File * p;
+
+        p = firstNodePtr;
+        prevNode = NULL;
+
+        while (p!=NULL)
+        {
+                if (p->name==name)
+                        return p;
+
+                prevNode = p;
+                p = p->next; 
+        }
+
+        prevNode=NULL;
+        return p;
+}
+
+//int main(){
+//	Directory d;
+//	d.File.name = "A";
+//}
+
+
 
 int Directory::getnumBlocks(){
 	return numBlocks;
